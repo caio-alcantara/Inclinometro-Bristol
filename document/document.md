@@ -98,7 +98,7 @@
 
    <img src="../assets/persona_1.png">
 
-<sup>Fonte: Material produzido pelos autores (2024)</sup>
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
 
 </div>
 
@@ -110,7 +110,7 @@
 
    <img src="../assets/persona_2.png">
 
-<sup>Fonte: Material produzido pelos autores (2024)</sup>
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
 
 </div>
 
@@ -118,8 +118,44 @@
 
 &emsp;A criação de João como persona para o projeto é essencial para que seja possível entender as necessidades, desafios e motivações de um público específico que o projeto pretende atingir. Ele possui as características de um trabalhador que é acostumado a operar máquinas pesadas e permite que a solução seja desenvolvida de maneira estratégica para sanar as suas dores. Assim, não é exagero algum dizer que João molda completamente o projeto, definindo muito de como o trabalho será feito.  
 
+## 3.1. Storyboard da persona 
+&emsp;De acordo com Gorny (2021), o storyboard é uma ferramenta essencial para antecipar e estruturar narrativas visuais, permitindo que designers identifiquem problemas de usabilidade e fluxo por meio de uma sequência de imagens que representam a interação do usuário. Dessa maneira, no contexto do nosso projeto, o storyboard é utilizado para ilustrar como o produto será utilizado no cotidiano dos usuários, servindo como um guia visual prático. A vantagem de usar imagens é que elas tornam a história fácil de entender à primeira vista e facilitam a memorização.
+
+Em geral, a criação de um storyboard inclui três elementos principais: o cenário, o visual e a legenda.
+
+* Cenário: Os storyboards são baseados em um cenário ou em uma história de usuário, e esse cenário é claramente especificado no topo do storyboard.
+* Visual: São as representações gráficas ou ilustrações da interação de cada etapa do cenário.
+* Legenda: Cada visual tem uma legenda correspondente. A legenda descreve brevemente as ações do usuário, ambiente, estado emocional, dispositivo e assim por diante.
+
+&emsp;Dessa forma, para o projeto do Inclinômetro Bristol, o storyboard representa uma ótima ferramenta para que se possa entender e ter uma ideia ilustrada de como a pesona utilizaria o dispositivo no dia-a-dia. No caso da persona João Silva, o storyboard é pensando justamente no seu dia de trabalho e consiste em 6 fases principais, sendo elas:
+
+* João chega ao ambiente de trabalho e confere o maquinário
+* João acopla o dispositivo na máquina
+* João conecta o seu celular ao dispositivo via bluetooth
+* As informações de ângulo são visíveis no celular de João
+* João entra na cabine de operação da máquina
+* Ao mover a máquina, João vê o ângulo se alterando na tela do celular
+
+&emsp;Essas fases representam de maneira genuína e simplificada o fluxo de trabalho de João em uma obra de construção civil que utiliza o Inclinômetro Bristol para medir a inclinação de uma perfuratriz. Tais fases também podem ser vistas de maneira visual abaixo (note que as imagens foram geradas por inteligência artificial, o que pode acarretar em erros e inconsistências):
+
+<div align="center">
+
+<sub>Figura 3 - Storyboard João Silva </sub>
+
+   <img src="../assets/storyboard.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;A análise do storyboard de João revela insights essenciais sobre as necessidades específicas de sua persona na interação com o dispositivo, destacando a necessidade por melhorar as qualidade de segurança de trabalho enquanto ainda oferece uma solução simples e eficiente. Ao final do desenvolvimento do storyboard, fica claro como cada etapa de interação foi projetada para responder às necessidades e expectativas da persona desse projeto. Ao entender e antecipar as motivações dos usuários, o projeto proporciona uma melhor experiência, que fortalece o engajamento e a confiança no dispositivo e os dados coletados.
+
+
 
 ## X. Referências
 MARÍAS, Julián. Persona. Alianza, 1997. Disponível em: http://www.hottopos.com/mp2/mariaspers.htm. Acesso em: 22 jan. 2025.
 
+GORNY, L. The story of storyboarding: exploring the hidden art form behind films. Disponível em: <https://www.itsnicethat.com/features/the-story-of-storyboarding-animation-film-061021>. Acesso em 23 jan. 2025
+
+‌
 
