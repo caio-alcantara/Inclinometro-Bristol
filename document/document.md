@@ -150,12 +150,99 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;A análise do storyboard de João revela insights essenciais sobre as necessidades específicas de sua persona na interação com o dispositivo, destacando a necessidade por melhorar as qualidade de segurança de trabalho enquanto ainda oferece uma solução simples e eficiente. Ao final do desenvolvimento do storyboard, fica claro como cada etapa de interação foi projetada para responder às necessidades e expectativas da persona desse projeto. Ao entender e antecipar as motivações dos usuários, o projeto proporciona uma melhor experiência, que fortalece o engajamento e a confiança no dispositivo e os dados coletados.
 
+## 4. Requisitos funcionais e não-funcionais
+&emsp;Requisitos funcionais e não funcionais são componentes essenciais no desenvolvimento de sistemas, pois definem tanto as funcionalidades esperadas quanto os padrões de desempenho, segurança e usabilidade necessários para que o sistema atenda plenamente às expectativas dos usuários e às demandas estratégicas do negócio. Estes requisitos formam a base para a arquitetura, direcionam as implementações técnicas e garantem a eficácia do sistema ao longo de seu ciclo de vida.
+
+### 4.1. Requisitos Funcionais
+&emsp;Em um projeto de tecnologia, os requisitos funcionais descrevem todas as funcionalidades e serviços que uma solução deve possuir a fim de atender as necessidades do usuário. Dessa forma, os requisitos funcionais devem deixar explícitos o que o produto/sistema deve fazer de maneira que esteja alinhado às regras de negócio.
+
+<div align="center">
+
+| RF#  | Descrição                                                                                                   |
+|------|-------------------------------------------------------------------------------------------------------------|
+| RF01 | O dispositivo deve ser capaz de medir o seu ângulo de inclinação em pelo menos dois eixos (X, Y)            |
+| RF02 | O dispositivo deve enviar os dados de inclinação via Bluetooth                                              |
+| RF03 | O dispositivo deve ser alimentado por bateria recarregável em automóveis                                    |
+| RF04 | O dispositivo deve armazenar os dados de medição localmente em um cartão SD                                 |
+| RF05 | O dispositivo deve possuir botões para ligar e desligar                                                     |
+| RF06 | O dispositivo deve possuir leds para indicar atividade e conexão Bluetooth                                  |
+| RF07 | O dispositivo deve permitir atualizações de software de maneira remota                                      |
+| RF08 | A interface gráfica deve mostrar informações de ângulo e bateria do dispositivo                             |
+
+</div>
+
+
+<p align="center">
+<sub>Quadro 1: Requisitos Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+
+### 4.2. Requisitos não-funcionais
+&emsp;Os requisitos não funcionais dizem respeito à qualidade e ao desempenho do sistema. Esses requisitos abordam atributos como usabilidade, segurança, confiabilidade, escalabilidade e eficiência. Por exemplo, um requisito não funcional pode especificar que o cadastro em um sistema deve ser rápido, em um tempo estimado de menos de cinco segundos, e que os dados pessoais dos usuários devem ser criptografados para garantir segurança. Da mesma forma, requisitos como alta disponibilidade, como se, o sistema deve estar disponível 100% (cem por cento) do tempo e escalabilidade para suportar até mil acessos simultâneos são exemplos destas características não funcionais. <br>
+&emsp;Neste contexto supramencionado, a principal diferença entre requisitos funcionais e não funcionais é que os requisitos funcionais focam nas tarefas e operações que o sistema deve realizar, enquanto os requisitos não funcionais lidam com a qualidade e as restrições sob as quais essas operações devem ocorrer.
+
+**Utilização de normas ISO:**
+
+&emsp;A sigla ISO significa International Organization for Standardization. Tal organização é responsável por padronizar produtos e serviços ao redor do mundo. As normas definidas por essa organização se mostram de extrema importância uma vez que, num mundo cada vez mais globalizado e com cada país seguindo seus próprios critérios, uma padronização desses critérios auxilia o comércio internacional, promove a concorrência justa e melhora a eficiência a nível global.<br>
+&emsp;A ISO25010 é uma norma internacional que define critérios de qualidade para o desenvolvimento de software (Ariele, 2015). Dessa forma, é comum que organizações utilizem tal norma para avaliar a qualidade de seus produtos e verificar quais pontos podem ou devem ser melhorados.<br>
+&emsp;Um dos pontos que é abordado na ISO25010 é o Modelo de Qualidade de Produto, que define os critérios para avaliar, especificamente, código e demais recursos presentes no software (Britton, 2021). Alguns dos aspectos de qualidade avaliados neste modelo incluem a confiabilidade do produto, seus requisitos de segurança e a eficiência de uso de recursos (como memória e processamento).
+
+<div align="center">
+
+| **RNF#**   | **Descrição**                                                                                                            | **Aspecto de Qualidade**      |
+|-----------|------------------------------------------------------------------------------------------------------------------------|-------------------------------|
+| RNF01     | O dispositivo deve utilizar os três sensores (Acelerômetro, Giroscópio e Magnetômetro) para minimizar erros de medição.  | Precisão                     |
+| RNF02     | A autonomia da bateria deve ser de pelo menos 1 dia em operação contínua.                                               | Eficiência Energética         |
+| RNF03     | A precisão mínima das medições de ângulo deve ser de 1°.                                                                | Precisão                     |
+| RNF04     | Deve ser implementado um filtro de Kalman para melhorar a fusão de dados e reduzir ruídos nas medições.                 | Funcionalidade e Precisão     |
+| RNF05     | O sistema deve ser resistente a vibrações intensas e a temperaturas de até 50 °C.                                       | Confiabilidade               |
+| RNF06     | O dispositivo deve ter proteção contra água e poeira (equivalente a uma classificação IP65 ou superior).                | Manutenibilidade             |
+| RNF07     | O dispositivo deve ser capaz de transmitir dados via Bluetooth em tempo real com um alcance mínimo de 10 metros.       | Desempenho                   |
+| RNF08     | O design do hardware deve garantir segurança elétrica e conformidade com normas de certificação, como a CE.             | Segurança e Conformidade     |
+| RNF09     | O dispositivo deve ter um tempo de resposta máximo de 200 ms para a transmissão de dados.                              | Desempenho                   |
+| RNF10     | O aplicativo deve ser intuitivo e de fácil uso, permitindo conexão rápida ao dispositivo.                              | Usabilidade                  |
+
+</div>
+
+
+<p align="center">
+<sub>Quadro 2: Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+<div align="center">
+
+&emsp;Cada um desses requisitos não funcionais pode ser testado individualmente, a fim de garantir a funcionalidade correta do dispositivo.
+
+| **RNF**   | **Método de Teste**                                                                                                                |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------|
+| **RNF01** | Realizar testes comparativos entre leituras individuais do acelerômetro, giroscópio e magnetômetro e a fusão dos três sensores. Validar a redução de erros na medição combinada. |
+| **RNF02** | Colocar o dispositivo em operação contínua em condições típicas de uso (sensores ativos, transmissão Bluetooth) e medir o tempo de autonomia da bateria até o esgotamento. |
+| **RNF03** | Calibrar o sistema com um dispositivo de referência (como um inclinômetro industrial, ou, em casos mais simples, até mesmo um transferidor) e validar se os valores medidos têm uma variação máxima de ±1°. |
+| **RNF04** | Implementar o filtro de Kalman e comparar as leituras do sistema com e sem o filtro em ambientes com ruído (como vibrações). Verificar a estabilidade e precisão dos valores. |
+| **RNF05** | Submeter o dispositivo a condições de vibração (com uma máquina de vibração ou superfície de teste) e temperaturas de até 50 °C, monitorando a consistência das medições. |
+| **RNF06** | Realizar testes de imersão leve e exposição a poeira, simulando condições equivalentes a IP65. Verificar o funcionamento normal do dispositivo após os testes. |
+| **RNF07** | Testar a transmissão de dados via Bluetooth em diferentes distâncias (até 10 metros) e ambientes variados (com obstáculos e interferências). Validar a recepção estável dos dados. |
+| **RNF08** | Verificar se os circuitos eletrônicos atendem a padrões de certificação CE, como isolamento, proteção contra curto-circuito e testes de segurança elétrica. |
+| **RNF09** | Monitorar o tempo de transmissão dos dados (desde a captura pelo sensor até a exibição no aplicativo) usando ferramentas de medição de latência. Confirmar que não excede 200 ms. |
+| **RNF10** | Realizar testes de usabilidade com operadores reais, verificando o tempo necessário para conectar o dispositivo e começar a receber dados. Observar possíveis dificuldades na interface. |
+
+</div>
+
+<p align="center">
+<sub>Quadro 3: Testes dos Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
 
 
 ## X. Referências
 MARÍAS, Julián. Persona. Alianza, 1997. Disponível em: http://www.hottopos.com/mp2/mariaspers.htm. Acesso em: 22 jan. 2025.
 
 GORNY, L. The story of storyboarding: exploring the hidden art form behind films. Disponível em: <https://www.itsnicethat.com/features/the-story-of-storyboarding-animation-film-061021>. Acesso em 23 jan. 2025
+
+ARIELE. O que é ISO? Blog da Qualidade. Disponível em: https://blogdaqualidade.com.br/o-que-e-iso/. Acesso em: 25 jan. 2025.
+
+BRITTON, J. What Is ISO 25010? Disponível em: <https://www.perforce.com/blog/qac/what-is-iso-25010>. Acesso em: 25 jan. 2025.
+
 
 ‌
 
