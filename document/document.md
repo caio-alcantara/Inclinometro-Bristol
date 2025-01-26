@@ -329,6 +329,47 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;Para as primeiras duas semanas de desenvolvimento do projeto, o foco estará em realizar a simulação do projeto em um software denominado [Wokwi](https://wokwi.com/). De acordo com a documentação oficial, o Wokwi é uma plataforma de simulação eletrônica online e gratuita, que permite simular o uso de diversos componentes eletrônicos em conjunto com microcontroladores como o ESP32 e o Arduino. A finalidade de se utilizar essa ferramenta está na necessidade de testar o hardware e os componentes eletrônicos em conjunto com toda a programação antes de iniciar de fato a montagem física do circuito. Abaixo, estará documentado o processo de desenvolvimento da simulação bem como os casos de testes para validar que o projeto funciona em ambiente simulado atendendo aos requisitos funcionais e não-funcionais. 
 
+**Funcionamento da simulação:**<br>
+A simulação no Wokwi replica o circuito físico do protótipo usando:
+- **ESP32**: Microcontrolador responsável pela leitura dos sensores e processamento.
+- **MPU6050**: Simula o acelerômetro/giroscópio para medição de inclinação.
+- **Terminal Serial**: Exibe os valores de pitch e roll em tempo real.
+- **Filtro de Kalman**: Combina dados do acelerômetro (ângulo absoluto) e giroscópio (taxa de variação) para suavizar ruídos.
+
+O código simulado:
+1. Lê dados brutos do MPU6050 (aceleração e giroscópio).
+2. Calcula ângulos brutos via acelerômetro (pitch/roll).
+3. Aplica o filtro de Kalman para reduzir oscilações.
+
+**Casos de Teste para Validação**
+
+<div align="center">
+
+| **TC#** | **Descrição**                               | **Entrada/Situação**                          | **Resultado Esperado**                     | **Método de Validação**                     |
+|---------|---------------------------------------------|-----------------------------------------------|--------------------------------------------|---------------------------------------------|
+| TC01    | Medição em superfície plana                 | Ax = 0, Ay = 0, Az = 9.81 m/s²               | Pitch ≈ 0°, Roll ≈ 0° (±1°)                | Verificar no terminal serial.              |
+| TC02    | Inclinação de 45° no Roll                   | Ax = 0g, Ay = 0.75, Az = 0.75g               | Roll ≈ 45° (±1°), Pitch ≈ 0°               | Comparar com `atan2(Ay, Az)`.              |
+| TC03    | Inclinação de 45° no Pitch                  | Ax = 0.75, Ay = 0g, Az = 0.75g               | Pitch ≈ 45° (±1°), Roll ≈ 0°               | Comparar com `atan2(-Ax, Az)`.             |
+| TC04    | Inclinação combinada (30° Pitch + 30° Roll) | Ax = 0.5g, Ay = 0.5g, Az = 0.707g            | Pitch ≈ 30°, Roll ≈ 30° (não linear)       | Validar com `θ = arccos(Az) ≈ 30°`.        |
+| TC05    | Vibração simulada (ruído ±0.2g)             | Adicionar ruído aos eixos X/Y                | Oscilação < ±2° após filtro                | Analisar gráfico no serial plotter.        |
+| TC06    | Movimento brusco (0° → 45° em 1s)           | Alterar Ax de 0g para 0.5g abruptamente       | Convergência em < 1s                       | Medir tempo de estabilização.              |
+
+</div>
+
+<p align="center">
+<sub>Quadro 7: Casos de teste para a simulação -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+&emsp;Após realizar os testes com os devidos inputs no simulador Wokwi, foi constatado que:
+* TC01: passa no teste com êxito
+* TC02: passa no teste com êxito
+* TC03: passa no teste com êxito
+* TC04: passa no teste com êxito
+* TC05: Não é possível testar no simulador 
+* TC06: passa no teste com algumas ressalvas (em alguns casos, demora alguns segundos para estabilizar as últimas casas decimais)
+
+&emsp;A partir disso, podemos concluir que a simulação foi feita com sucesso e praticamente todos os seus casos de teste passaram com êxito, validando, assim, a ideia da construção do Inclinômetro Bristol. A partir disso, o próximo passo do projeto é montar o hardware da solução e testar fisicamente. Felizmente, por conta da simulação, o firmware/código básico para testes já está pronto. 
+
 ## X. Referências
 MARÍAS, Julián. Persona. Alianza, 1997. Disponível em: http://www.hottopos.com/mp2/mariaspers.htm. Acesso em: 22 jan. 2025.
 
