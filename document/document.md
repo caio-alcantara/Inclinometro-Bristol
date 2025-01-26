@@ -232,7 +232,102 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 <sub>Quadro 3: Testes dos Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
+## 5. Arquitetura simplificada da solução
+&emsp;Em projetos de tecnologia, o processo de definir uma arquitetura é de suma importância, uma vez que esta arquitetura dita como os processos de desenvolvimento seguirão, definindo tecnologias, métodos, paradigmas de desenvolvimento, etc. Dessa forma, essa seção tem como objetivo detalhar brevemente todos os componentes que estão listados para serem utilizados na solução, como que cada um desses componentes ajuda a satisfazer os requisitos funcionais e não-funcionais e também documentar as tecnologias que serão utilizadas, envolvendo linguagens de programação, tecnologias de transmissão sem fio, algoritmos, etc. 
 
+### 5.1. Lista de componentes (Bill of Materials)
+&emsp;A lista de materiais, ou BOM (do inglês *Bill of Materials*) consiste em uma tabela de todos os componentes que pretende-se utilizar no dipositivo. Uma versão em planilha pode ser encontrada no link: https://docs.google.com/spreadsheets/d/1ozrlB3lih4T1Wbghi2Zi2bKn9VV_Soy1v98KHoGc6X8/edit?gid=0#gid=0
+
+<div align="center">
+
+| Nome                                                                 | Preço    | Quantidade | Link de Compra                                                                 |
+|----------------------------------------------------------------------|----------|------------|--------------------------------------------------------------------------------|
+| ESP32-WROOM                                                          | R$ 41,90 | 2          | [Link](https://www.robocore.net/wifi/esp32-wifi-bluetooth)                     |
+| Acelerômetro, Giroscópio e Magnetômetro MPU-9250                     | R$ 79,90 | 2          | [Link](https://www.robocore.net/sensor-robo/acelerometro-giroscopio-magnetometro-mpu9250) |
+| Lithium Battery Detection Module, LiPo Fuel Gauge, A, D Conversão, IIC, MAX17043 | R$ 17,82 | 2          | [Link](https://pt.aliexpress.com/item/1005006386540902.html)                   |
+| Mini Módulo Cartão Micro SD                                          | R$ 4,90  | 2          | [Link](https://www.eletrogate.com/mini-modulo-cartao-micro-sd)                 |
+| Módulo Carregador de Baterias de Lítio TP4056 com Proteção - USB-C   | R$ 6,90  | 2          | [Link](https://www.eletrogate.com/modulo-carregador-de-baterias-de-litio-tp4056-com-protecao-usb-c) |
+| Módulo Regulador de Tensão Ajustável LM2596 3A                       | R$ 7,50  | 2          | [Link](https://www.robocore.net/regulador-de-tensao/modulo-regulador-de-tensao-ajustavel-lm2596-3a) |
+| Regulador de Tensão 7805 5V                                          | R$ 2,90  | 3          | [Link](https://www.makerhero.com/produto/regulador-de-tensao-7805-5v/)         |
+| Bateria Li-Ion 18650 3,7V 2500mAh 2C                                 | R$ 39,90 | 2          | [Link](https://www.robocore.net/bateria/bateria-li-ion-18650-37v-2500mah)      |
+| Valor total                                 | R$ 406,34     |
+
+
+</div>
+
+<p align="center">
+<sub>Quadro 4: Bill of Materials -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+### 5.2. Utilização de cada componente
+&emsp;Cada componente em um projeto de tecnologia não é escolhi arbitrariamente, mas sim com o propósito de satisfazer cada um dos requisitos estabelecidos. Dessa forma, a tabela abeixo demonstra como cada um dos componentes da lista de materiais ajuda o dispositivo a se aproximar do seu objetivo final.
+
+<div align="center">
+
+| Nome                                                                 | Requisito que atende                     | Como atende                                                                 |  
+|----------------------------------------------------------------------|------------------------------------------|-----------------------------------------------------------------------------|  
+| ESP32-WROOM                                                          | **RNF07**, **RNF09**                     | Garante transmissão Bluetooth em tempo real (10m) e processamento rápido para tempo de resposta ≤200 ms |  
+| Acelerômetro, Giroscópio e Magnetômetro MPU-9250                     | **RNF01**, **RNF03**, **RNF04**          | Fornece dados triaxiais para fusão sensorial (minimiza erros), permite precisão de 1° e integra-se ao filtro de Kalman |  
+| Lithium Battery Detection Module, LiPo Fuel Gauge, A, D Conversão, IIC, MAX17043 | **RNF02**                                | Monitora carga da bateria em tempo real para otimizar consumo e garantir autonomia de 24h |  
+| Mini Módulo Cartão Micro SD                                          | **RNF05**                                | Armazena dados localmente durante falhas de transmissão, mantendo operação sob vibrações |  
+| Módulo Carregador de Baterias de Lítio TP4056 com Proteção - USB-C   | **RNF08**                                | Protege contra curto-circuitos e sobrecargas, garantindo conformidade com padrões de segurança |  
+| Módulo Regulador de Tensão Ajustável LM2596 3A                       | **RNF02**, **RNF05**                     | Estabiliza alimentação (5V) para eficiência energética e resistência a variações térmicas |  
+| Regulador de Tensão 7805 5V                                          | **RNF08**                                | Adapta tensão de entrada (até 20V) para 5V fixos, seguindo normas de segurança elétrica |  
+| Bateria Li-Ion 18650 3,7V 2500mAh 2C                                 | **RNF02**                                | Fornece 5000mAh total (2x2500mAh) para suportar 24h de operação contínua |  
+
+</div>
+
+<p align="center">
+<sub>Quadro 5: Como cada componente satisfaz os requisitos -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+* Nota: RNF06 e RNF10 precisam de ações complementares (design físico ou desenvolvimento de software).
+
+### 5.3. Tecnologias utilizadas
+&emsp;As tecnologias utilizadas em um projeto como este desempenham um papel fundamental no sucesso do projeto. A utilização de uma linguagem ou framework não eficiente pode custar tempo e dinheiro. Dessa forma, é vantajoso estudar, escolher e listar quais as melhores tecnologias para resolver o problema de acordo com seus requisitos. A tabela abaixo demonstra as tecnologias utilizadas no projeto.
+
+<div align="center">
+
+| Tecnologia           | Descrição                                                                                     | Requisitos Atendidos (RNF)  |
+|----------------------|---------------------------------------------------------------------------------------------|-----------------------------|
+| **Linguagem**        | **C++ (Arduino Framework)**: Ideal para programação de microcontroladores e integração com sensores.                  | RNF04, RNF07, RNF09         |
+| **Bibliotecas**      | - **MPU9250_light**: Leitura de dados do acelerômetro/giroscópio/magnetômetro.<br>- **Kalman Filter Library**: Implementação do filtro de Kalman.<br>- **ArduinoBLE**: Transmissão Bluetooth BLE.<br>- **ArduinoOTA**: Atualizações de firmware via Wi-Fi/Bluetooth.<br>- **SD**: Armazenamento de dados no cartão Micro SD. | RNF01, RNF04, RNF07, RNF09  |
+| **Paradigmas**       | - **Programação Orientada a Objetos (POO)**: Para modularizar código (ex: classes para sensores, comunicação).<br>- **Multitarefa Assíncrona**: Usando `FreeRTOS` para gerência de threads (leitura de sensores, Bluetooth, OTA). | RNF09, RNF05                |
+| **Framework**        | **Flutter (Dart)**: Para desenvolvimento multiplataforma (Android/iOS) com suporte a BLE.<br>| RNF10                      |
+| **Bibliotecas**      | - **flutter_blue**: Comunicação Bluetooth BLE.<br>- **Charts**: Exibição gráfica da inclinação em tempo real. | RNF07, RNF10               |
+| **Filtro de Kalman** | - Implementação customizada para fusão de dados do MPU9250 (acelerômetro + giroscópio + magnetômetro).<br>- **Biblioteca Eigen**: Para operações matriciais (opcional, se usar C++ puro). | RNF01, RNF03, RNF04        |
+| **Cálculo de Ângulo**| - Uso de **quaternions** para representação 3D da orientação, evitando *gimbal lock*.       | RNF03, RNF05               |
+| **MAX17043 Library** | - Monitoramento preciso da bateria (carga, tensão).<br> | RNF02, RNF05               |
+| **Estratégias**      | - Desligamento de periféricos não críticos (ex: SD card) quando a bateria está baixa.       | RNF02                      |
+| **ArduinoOTA**       | - Atualizações via Wi-Fi ou Bluetooth (dependendo da disponibilidade da rede no local).<br>- **Servidor HTTP**: Hospedagem do firmware (ex: usando ESP32 como servidor web). | RNF07, RNF09               |
+| **Plataformas**      | - **Wokwi**: Simulação inicial do circuito e lógica.<br>- **PlatformIO**: Ambiente de desenvolvimento com testes unitários e integração contínua. | RNF04, RNF05               |
+| **Prototipagem**      | - **KiCad**: Para esquematizar e desenhar a placa de circuito do dispositivo.<br> | Todos          |
+
+</div>
+
+<p align="center">
+<sub>Quadro 6: Tecnologias e métodos utilizados no desenvolvimento da solução -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+## 6. Desenvolvimento contínuo do projeto
+&emsp;Esta seção tem como objetivo falar sobre o desenvolvimento contínuo do projeto e da solução. Dessa forma, este é um espaço utilizado para discutir os avanços feitos a cada semana/mês, entregas que foram feitas com sucesso, impedimentos, problemas encontrados, etc. 
+
+### 6.1. Primeira semana de projeto
+&emsp;O começo do projeto foi marcado por todo o processo de estruturação. Este documento foi criado e preenchido até a seção 5.3. Além disso, foi realizada a compra de todos os componentes que serão necessários para a primeira fase do projeto. <br>
+&emsp;A principio, está sendo realizado um estudo mais aprodundado de como utilizar o sensor MPU9250 para realizar a leitura do ângulo de inclinação do dispositivo. Algumas fontes incluem vídeos de uma playlist onde um drone é construído. Este drone utiliza sensores MPU6050 (Acelerômetro e Giroscópio) para medir o ângulo do drone e estabilizá-lo. Além disso, é daí que surgiu a ideia de utilizar um filtro Kalman para estabilizar as medições do sensor. Vale a pena assistir:
+- [5 -  How to calibrate the MPU6050 with Arduino and Teensy](https://www.youtube.com/watch?v=Yh6mYF3VdFQ&list=PLeuMA6tJBPKsAfRfFuGrEljpBow5hPVD4&index=7)
+- [14 -  Measure angles with the MPU6050 accelerometer](https://www.youtube.com/watch?v=7VW_XVbtu9k&list=PLeuMA6tJBPKsAfRfFuGrEljpBow5hPVD4&index=17)
+- [15 -  Combine a gyroscope and accelerometer to measure angles - precisely](https://www.youtube.com/watch?v=5HuN9iL-zxU&list=PLeuMA6tJBPKsAfRfFuGrEljpBow5hPVD4&index=18)
+
+&emsp;Por enquanto, apenas uma coisa pode ser feita até que os componentes eletrônicos comprados cheguem: simulações de software. Para isso, está sendo utilizado o software Wokwi, um poderoso simulador de projetos IOT com ESP32. Assim, este é o próximo passo de desenvolvimento. 
+
+## 7. Simulação do protótipo e casos de teste
+&emsp;Em um projeto que envolve hardware e software, é comum que o desenvolvimento da solução passe por 3 etapas:
+* Simulação, a fim de entender se a ideia é viável, se os componentes eletrônicos interagem bem entre si, validar ideias de código sem se preocupar com componentes físicos;
+* Prototipação em protoboard, de modo que as conexões não sejam definitivas e o produto possa ser testado sem muito compromisso. Aqui, os componentes são testados levando em consideração o modo como eles funcionam no mundo real. Ou seja, a solução é validada no mundo real;
+* Prototipação de placa de circuito, sendo normalmente o último estágio de desenvolvimento, quando já se sabe que a solução está relativamente pronta e não deve sofrer grandes alterações. É uma versão mais robusta e profissional do produto;
+
+&emsp;Para as primeiras duas semanas de desenvolvimento do projeto, o foco estará em realizar a simulação do projeto em um software denominado [Wokwi](https://wokwi.com/). De acordo com a documentação oficial, o Wokwi é uma plataforma de simulação eletrônica online e gratuita, que permite simular o uso de diversos componentes eletrônicos em conjunto com microcontroladores como o ESP32 e o Arduino. A finalidade de se utilizar essa ferramenta está na necessidade de testar o hardware e os componentes eletrônicos em conjunto com toda a programação antes de iniciar de fato a montagem física do circuito. Abaixo, estará documentado o processo de desenvolvimento da simulação bem como os casos de testes para validar que o projeto funciona em ambiente simulado atendendo aos requisitos funcionais e não-funcionais. 
 
 ## X. Referências
 MARÍAS, Julián. Persona. Alianza, 1997. Disponível em: http://www.hottopos.com/mp2/mariaspers.htm. Acesso em: 22 jan. 2025.
