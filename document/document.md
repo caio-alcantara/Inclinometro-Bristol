@@ -150,6 +150,35 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;A análise do storyboard de João revela insights essenciais sobre as necessidades específicas de sua persona na interação com o dispositivo, destacando a necessidade por melhorar as qualidade de segurança de trabalho enquanto ainda oferece uma solução simples e eficiente. Ao final do desenvolvimento do storyboard, fica claro como cada etapa de interação foi projetada para responder às necessidades e expectativas da persona desse projeto. Ao entender e antecipar as motivações dos usuários, o projeto proporciona uma melhor experiência, que fortalece o engajamento e a confiança no dispositivo e os dados coletados.
 
+## 3.2. User Stories
+&emsp;User Stories configuram uma maneira de identificar as funcionalidades que uma persona valoriza em uma solução. Elas possuem o formato "Eu, como {ocupação da persona}, gostaria de {ação}, a fim de que {ganho}.
+
+&emsp;Para a persona João Silva, foram desenvolvidas as seguintes histórias do usuário:
+
+<div align="center">
+
+| User Story (ID) | Descrição (Formato Clássico)                                                                               | Justificativa                                                                                     | Requisito que Atende (RF/RNF) |
+|------------------|-----------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------------------------|
+| US01             | **Como** operador de perfuratriz, **quero** visualizar o ângulo de inclinação em tempo real no celular **para que** eu possa ajustar a posição com segurança e eficiência. | Garante precisão na operação, evitando erros de perfuração e danos à máquina.                    | RF01, RNF03, RNF04           |
+| US02             | **Como** operador em campo, **quero** conectar o dispositivo ao celular via Bluetooth em poucos passos **para que** eu não precise interromper a operação para configurações. | Simplifica o fluxo de trabalho, evitando perda de tempo com configurações complexas.             | RF02, RNF07, RNF10           |
+| US03             | **Como** operador que lida com vibrações intensas, **quero** que o dispositivo funcione sem falhas sob vibração **para que** as medições não sejam comprometidas. | Assegura confiabilidade em ambientes críticos, onde vibrações são frequentes.                    | RNF05                        |
+| US04             | **Como** operador em turnos longos, **quero** monitorar o nível da bateria do dispositivo **para que** ele não desligue durante o uso. | Permite planejamento de recargas, evitando interrupções inesperadas na operação.                 | RF03, RNF02                  |
+| US05             | **Como** operador com pouca familiaridade com tecnologia, **quero** uma interface simples no celular com dados essenciais **para que** eu não me distraia com informações irrelevantes. | Reduz a curva de aprendizado e aumenta a eficiência operacional.                                 | RF08, RNF10                  |
+| US06             | **Como** operador em ambientes com poeira e umidade, **quero** que o dispositivo seja resistente a água e sujeira **para que** ele não quebre devido a fatores externos. | Prolonga a vida útil do equipamento e mantém a precisão em condições adversas.                   | RNF06                        |
+| US07             | **Como** operador preocupado com segurança, **quero** receber alertas sonoros e visuais se a inclinação ultrapassar limites **para que** eu possa interromper a operação imediatamente. | Previne acidentes e danos à máquina causados por inclinações perigosas.                         | RF08, RNF10                  |
+| US08             | **Como** operador que movimenta a perfuratriz com frequência, **quero** que o dispositivo seja fixado de forma robusta **para que** ele não se solte acidentalmente. | Evita perda ou danos ao dispositivo durante transporte ou operação.                              | RNF05, RNF06                 |
+| US09             | **Como** operador que movimenta a perfuratriz em ambiente de construção civil, **quero** que saber o ângulo de inclinação da máquina **para que** eu possa ajustá-la corretamente. | Principal funcionalidade da aplicação.                              | Todos                 |
+
+</div>
+
+
+<p align="center">
+<sub>Quadro 1: Requisitos Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+</p>
+
+
+&emsp;No projeto, cada uma dessas histórias do usuário tem como finalidade auxiliar a entender melhor o que a persona quer e precisa e direcionar o desenvolvimento para acatar tais necessidades. Dessa forma, estas histórias do usuário serão fundamentais para o andamento do projeto, uma vez que cada task/funcionalidade deve ser pensada a fim de cumprir essas histórias.
+
 ## 4. Requisitos funcionais e não-funcionais
 &emsp;Requisitos funcionais e não funcionais são componentes essenciais no desenvolvimento de sistemas, pois definem tanto as funcionalidades esperadas quanto os padrões de desempenho, segurança e usabilidade necessários para que o sistema atenda plenamente às expectativas dos usuários e às demandas estratégicas do negócio. Estes requisitos formam a base para a arquitetura, direcionam as implementações técnicas e garantem a eficácia do sistema ao longo de seu ciclo de vida.
 
@@ -169,11 +198,12 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 | RF07 | O dispositivo deve permitir atualizações de software de maneira remota                                      |
 | RF08 | A interface gráfica deve mostrar informações de ângulo e bateria do dispositivo                             |
 
+
 </div>
 
 
 <p align="center">
-<sub>Quadro 1: Requisitos Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 2: Requisitos Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 
@@ -206,7 +236,7 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 
 <p align="center">
-<sub>Quadro 2: Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 3: Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 <div align="center">
@@ -229,7 +259,7 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 </div>
 
 <p align="center">
-<sub>Quadro 3: Testes dos Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 4: Testes dos Requisitos Não-Funcionais -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 ## 5. Arquitetura simplificada da solução
@@ -256,7 +286,7 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 </div>
 
 <p align="center">
-<sub>Quadro 4: Bill of Materials -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 5: Bill of Materials -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 ### 5.2. Utilização de cada componente
@@ -278,7 +308,7 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 </div>
 
 <p align="center">
-<sub>Quadro 5: Como cada componente satisfaz os requisitos -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 6: Como cada componente satisfaz os requisitos -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 * Nota: RNF06 e RNF10 precisam de ações complementares (design físico ou desenvolvimento de software).
@@ -306,7 +336,7 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 </div>
 
 <p align="center">
-<sub>Quadro 6: Tecnologias e métodos utilizados no desenvolvimento da solução -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 7: Tecnologias e métodos utilizados no desenvolvimento da solução -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 ## 6. Desenvolvimento contínuo do projeto
@@ -357,7 +387,7 @@ O código simulado:
 </div>
 
 <p align="center">
-<sub>Quadro 7: Casos de teste para a simulação -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
+<sub>Quadro 8: Casos de teste para a simulação -  Material criado e desenvolvido pelo desenvolvedor.</sub><br>
 </p>
 
 &emsp;Após realizar os testes com os devidos inputs no simulador Wokwi, foi constatado que:
