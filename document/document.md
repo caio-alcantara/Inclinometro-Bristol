@@ -400,6 +400,18 @@ O código simulado:
 
 &emsp;A partir disso, podemos concluir que a simulação foi feita com sucesso e praticamente todos os seus casos de teste passaram com êxito, validando, assim, a ideia da construção do Inclinômetro Bristol. A partir disso, o próximo passo do projeto é montar o hardware da solução e testar fisicamente. Felizmente, por conta da simulação, o firmware/código básico para testes já está pronto. 
 
+&emsp;O link para a simulação pode ser encontrado aqui: https://wokwi.com/projects/421158430038353921
+
+<div align="center">
+
+<sub>Figura 4 - Simulação do protótipo no Wokwi </sub>
+
+   <img src="../assets/simulacao_wokwi.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
 ## X. Referências
 MARÍAS, Julián. Persona. Alianza, 1997. Disponível em: http://www.hottopos.com/mp2/mariaspers.htm. Acesso em: 22 jan. 2025.
 
