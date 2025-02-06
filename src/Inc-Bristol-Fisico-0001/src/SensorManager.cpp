@@ -13,6 +13,7 @@ SensorManager::SensorManager(MPU9250& sensor, MPU9250Setting& settings, TwoWire&
 // Inicializar sensor (endereço I2C padrão é 0x68, mas pode ser alterado na placa do sensor)
 bool SensorManager::initialize() {
     wire.begin();
+    wire.setClock(100000); // Define a velocidade do I2C para 100 kHz
     return mpu.setup(Config::MPU_I2C_ADDRESS, settings, wire); // Retorno: true se o sensor foi inicializado com sucesso, false caso contrário
 }
 

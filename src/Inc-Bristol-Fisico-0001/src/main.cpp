@@ -5,6 +5,7 @@
 #include "KalmanFilter.h"
 #include "SensorManager.h"
 #include "DataProcessor.h"
+#include "BluetoothLowEnergy.h"
 
 // ******************* Instanciação de objetos e Variáveis Globais  ******************* //
 MPU9250 mpu; // Instância do sensor MPU9250
@@ -33,16 +34,20 @@ unsigned long last_update = 0;
 // Caso o sensor não seja encontrado no barramento I2C, piscar o led.
 // Quando o sensor for encontrado, desligar o led.
 void handleSensorError() {
-    Serial.println("Erro crítico no sensor!");
-    while(true) {
+    Serial.println("Erro crítico no sensor! Tentando reconectar...");
+    bool mensagemImpressa = true;
+    while (true) {
+        // Pisca o LED para indicar erro
         digitalWrite(Config::LED_PIN, !digitalRead(Config::LED_PIN));
         delay(100);
         if (sensor.initialize()) {
-            digitalWrite(Config::LED_PIN, LOW); 
+            digitalWrite(Config::LED_PIN, LOW);
+            Serial.println("Sensor reconectado!");
             break;
         }
     }
 }
+
 
 // Inicializa os filtros de Kalman para os ângulos de pitch e roll
 // Pega o primeiro dado dos sensores e inicializa os filtros com tais valores 
@@ -62,6 +67,8 @@ void setup() {
     if(!sensor.initialize()) {
         handleSensorError();
     }
+
+    setupBLE(); // Inicializa o serviço BLE
 
     sensor.calibrateAccelGyro(); // Calibração do acelerômetro e giroscópio
     initializeFilters();
@@ -95,6 +102,8 @@ void loop() {
         const float total_inclination = DataProcessor::calculateTotalInclination(
             filtered_pitch, filtered_roll);
 
+        sendAngleValue(total_inclination); // Envia o valor da inclinação via BLE
+
         // Display dos valores em monitor serial para debbuging e análise
         Serial.printf(
             "Y:%.1f P:%.1f R:%.1f | FP:%.1f FR:%.1f | Inc:%.1f | Mag[%.1f,%.1f,%.1f]\n",
@@ -103,5 +112,5 @@ void loop() {
             total_inclination,
             data.mag.x, data.mag.y, data.mag.z
         );
-    }
+    } 
 }
