@@ -103,6 +103,7 @@ void loop() {
             filtered_pitch, filtered_roll);
 
         sendAngleValue(total_inclination); // Envia o valor da inclinação via BLE
+        sendPitchAndRoll(filtered_pitch, filtered_roll); // Envia pitch e roll via BLE
 
         // Display dos valores em monitor serial para debbuging e análise
         Serial.printf(

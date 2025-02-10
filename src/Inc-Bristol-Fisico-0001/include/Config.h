@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 
 namespace Config {
     constexpr uint8_t MPU_I2C_ADDRESS = 0x68;

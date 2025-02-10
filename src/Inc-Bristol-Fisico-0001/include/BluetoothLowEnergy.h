@@ -1,6 +1,7 @@
 #ifndef BLUETOOTHLOWENERGY_H // Guarda para evitar inclusão múltipla
 #define BLUETOOTHLOWENERGY_H
 
+#include <Arduino.h> 
 // Libs do ESP32 para BLE
 #include <BLEDevice.h> // BLEDevice: Gerencia o dispositivo BLE
 #include <BLEServer.h> // BLEServer: Cria e gerencia o servidor BLE (periférico)
@@ -8,8 +9,11 @@
 #include <BLE2902.h> // BLE2902: Descritor padrão para notificações/indicações
 
 // UUIDs do serviço e característica (precisam ser únicos)
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define TOTAL_ANGLE_SERVICE_UUID            "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define TOTAL_ANGLE_CHARACTERISTIC_UUID     "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define PITCH_AND_ROLL_SERVICE_UUID         "16b26245-cb90-416b-a083-3a3c0e9271b0"
+#define ROLL_CHARACTERISTIC_UUID            "44e1ccb2-a26f-4272-b726-15d4b0f221d4"
+#define PITCH_CHARACTERISTIC_UUID           "0bb94e15-2437-49dc-a80d-310a1e725ec8"
 /* 
 SERVICE_UUID: Identifica o serviço principal
 CHARACTERISTIC_UUID: Identifica a característica específica dentro do serviço
@@ -33,7 +37,7 @@ public:
 };
 
 void setupBLE();
-void updateCounterAndNotify();
 void sendAngleValue(float angle);
+void sendPitchAndRoll(float pitch, float roll);
 
 #endif // BLUETOOTHLOWENERGY_H
