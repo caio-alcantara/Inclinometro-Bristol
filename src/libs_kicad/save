@@ -1,0 +1,29 @@
+#include <Arduino.h>
+
+
+
+void setup() {
+    Serial.begin(115200); 
+    setupBLE(); // Configura o BLE
+}
+
+void loop() {
+    if (millis() - lastMillis > 500) {
+        float angle = random(0, 91);
+        sendAngleValue(angle); 
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
