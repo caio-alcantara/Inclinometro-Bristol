@@ -351,6 +351,80 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;Por enquanto, apenas uma coisa pode ser feita até que os componentes eletrônicos comprados cheguem: simulações de software. Para isso, está sendo utilizado o software Wokwi, um poderoso simulador de projetos IOT com ESP32. Assim, este é o próximo passo de desenvolvimento. 
 
+### 6.2. Primeiro mês de execução do projeto
+
+&emsp;Após a primeira semana de projeto, os componentes de hardware comprados foram finalmente entregues e foi possível, então, começar a trabalhar em um protótipo físico já em uma mini-protoboard. O trabalho na protoboard envolveu fazer as ligações físicas do microcontrolador ESP32, o IMU MPU9250, a placa de carregamento TP4056 e a bateria do dispositivo, uma célula de lítio 18650 3.6V 2500mAh. As ligações na protoboard seguiram um esquemático semelhante ao do esquemático presente na simulação (Seção 7), com a adição do circuito de carregamento e bateria. Dessa forma, o circuito montado na protoboard pode ser visto no vídeo disponível no <a href="https://drive.google.com/file/d/1-cZsZ9_ApUcqNGR_vv2ISyXd2w9-_lHn/view?usp=sharing">link</a>.
+
+&emsp;É importante dizer que esta primeira versão funcionava bem apenas quando conectada via USB ao computador, ou seja, não funcionava apenas com a bateria. Isso acontecia por conta de um booster de má qualidade que estava sendo usado para aumentar a tensão da bateria para alimenta o ESP32. O booster é um dispositivo eletrônico que consegue receber um nível de tensão e enviar um nível mais alto. Como a tensão da bateria varia entre 4.2 e 3.6 volts e o microcontrolador precisava de 5 volts, a ideia era usar o booster para aumentar a tensão da bateria para este valor. Entretanto, o booster introduziu um ruído significativo no circuito do microcontroaldor, o que fez com a sua interface I2C (responsável pela conexão do sensor IMU MPU9250) não funcionasse. Assim, a solução foi remover o booster e alimentar o ESP32 diretamente com a bateria, algo que pareceu funcionar bem.
+
+&emsp;Além de montar todo o circuito físico, o primeiro mês de desenvolvimento também contou com o desenvolvimento do software que, utilizando o filtro de Kalman, faz a fusão dos dados de acelerômetro e giroscópio nos dá um valor de ângulo consideravelmente estável. Com tal software, foi possível atingir uma precisão de aproximadamente 0.1 grau. O código dessa primeira versão pode ser encontrado na pasta src/Inc-Bristol-Fisico-0001 deste projeto, e está no formato de um projeto do Platform IO (uma extensão para VS Code que é utilizada para desenvolver para microcontroladores). O código está dividido em arquivos source (.cpp) e headers (.h), onde os primeiros contam com a lógica do código e os segundos trazem as definições das funções para que os arquivos sejam importados, trazendo modularidade ao projeto. 
+
+* src/Inc-Bristol-Fisico-0001/include/BluetoothLowEnergy.h: Definições de funções para as funções de bluetooth low energy do microcontrolador.
+* src/Inc-Bristol-Fisico-0001/include/Config.h: Definições de configurações gerais do código, como portas, endereços I2C, valores para filtro de Kalman.
+* src/Inc-Bristol-Fisico-0001/include/DataProcessor.h: Definições para módulo responsável por realizar os cálculos com dados vindos do sensor.
+* src/Inc-Bristol-Fisico-0001/include/KalmanFilter.h: Definições de funções para a classe do filtro de Kalman, que realiza as predições de ângulos (estabiliza a medição do ângulo).
+* src/Inc-Bristol-Fisico-0001/include/SensorManager.h: Definições para módulo responsável por interagir com o sensor MPU9250.
+
+* src/Inc-Bristol-Fisico-0001/src/BluetoothLowEnergy.cpp: código fonte para as funções de envio de dados com o bluetooth low energy.
+* src/Inc-Bristol-Fisico-0001/src/DataProcessor.cpp: código fonte para o processamento de dados que vêm do sensor MPU9250, realiza cálculos de pitch e roll, por exemplo.
+* src/Inc-Bristol-Fisico-0001/src/KalmanFilter.cpp: Todo o código bruto para se implementar o filtro de Kalman, incluindo seus cálculos matriciais. 
+* src/Inc-Bristol-Fisico-0001/src/SensorManager.cpp: Código fonte que abstrai a biblioteca do MPU9250 para acessar os dados do sensor MPU9250.
+* src/Inc-Bristol-Fisico-0001/src/main.cpp: Este é o arquivo principal, o nosso "entry-point". Aqui, são importados os módulos e o microcontrolador é configurado e todas as funções são chamdas. No loop, os valores de ângulo são filtrados pelo Filtro de Kalman e os valores são enviados via bluetooth. 
+
+&emsp;Além da documentação presente aqui, o código se suficientemente comentado e bem escrito para que se possa entender o seu funcionamento de maneira clara e direta. Como dito anteriormente, essa versão do software se mostrou promissora e retornou valores de ângulos precisos e estáveis. Entretanto, tais medições ainda não foram testadas em máquinas, então é difícil saber se o funcionamento continuará satisfatório em ambientes de alta vibração. Uma primeira demonstração da medição de ângulo com a versão do inclinômetro em proboard pode ser visto no seguinte <a href="https://drive.google.com/file/d/1TFvWR8d0liu2skIPtGLhfb_HX8xHarvI/view?usp=sharing">link</a>.
+
+&emsp;Para além do desenvolvimento da versão inicial em protoboard e do firmaware, uma das metas do primeiro mês de desenvolvimento seria já desenvolver uma versão inicial de uma placa de circuito impresso. Assim, a primeira versão foi prototipada no KiCAD e fabricada em uma prototipadora própria. Os esquemáticos, desenhos e placa finalizada podem ser vistos nas figuras abaixo:
+
+<div align="center">
+
+<sub>Figura X - Esquemático da PCI inicial </sub>
+
+   <img src="../assets/pcb_esquematico_0001.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+
+<sub>Figura X - Desenho da PCI inicial </sub>
+
+   <img src="../assets/desenho_pcb_0001.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+
+<sub>Figura X - PCI inicial </sub>
+
+   <img src="../assets/pcb_0001.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;A placa foi feita, testada e funcionou corretamente. Entretanto, alguns pontos de melhoria foram notados:
+* O tamanho dos furos para parafusos ficou muito grande. 
+* O posicionamento da bateria não ficou ideal. A proposta é colocar a bateria do outro lado pra deixar USB livre.
+* Deixar componentes mais próximos, fazer placa menor (principalmente capacitores).
+* Posicionamento do interruptor também não ficou ideal.
+
+&emsp;Dessa forma, foi desenvolvida uma segunda versão da PCI, que conta com os exatos componentes da versão anterior, porém arranjados de maneira diferente. Além disso, foi decidido remover o espaço para bateria da placa, a fim de deixá-la menor (a bateria ainda estará presente no case, mas não em cima da placa).
+
+<div align="center">
+
+<sub>Figura X - Desenho da PCI inicial 2.0 </sub>
+
+   <img src="../assets/desenho_pcb_0002.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Note que, como nessas versões iniciais o footprint (texto em cima da placa) não é impresso, não é um problema que ele esteja sobreposto em alguns pontos. Para a versão final e industrial, é de suma importância que o footprint esteja adequado, uma vez que ele dá várias instruções sobre a montagem da placa e seu funcionamento. 
+
 ## 7. Simulação do protótipo e casos de teste
 &emsp;Em um projeto que envolve hardware e software, é comum que o desenvolvimento da solução passe por 3 etapas:
 * Simulação, a fim de entender se a ideia é viável, se os componentes eletrônicos interagem bem entre si, validar ideias de código sem se preocupar com componentes físicos;
