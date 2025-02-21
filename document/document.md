@@ -423,7 +423,39 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 </div>
 
-&emsp;Note que, como nessas versões iniciais o footprint (texto em cima da placa) não é impresso, não é um problema que ele esteja sobreposto em alguns pontos. Para a versão final e industrial, é de suma importância que o footprint esteja adequado, uma vez que ele dá várias instruções sobre a montagem da placa e seu funcionamento. 
+&emsp;Note que, como nessas versões iniciais o footprint (texto em cima da placa) não é impresso, não é um problema que ele esteja sobreposto em alguns pontos. Para a versão final e industrial, é de suma importância que o footprint esteja adequado, uma vez que ele dá várias instruções sobre a montagem da placa e seu funcionamento. Assim, a segunda versão da placa ficou assim:
+
+<div align="center">
+
+<sub>Figura X - PCI inicial 2.0 </sub>
+
+   <img src="../assets/pcb_0002.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Para alémm da placa de circuito, que funcionou melhor do que a anterior (apesar de ainda precisar de ajustes), também foi desenvolvido um case provisório, impresso em impressora 3D.
+
+<div align="center">
+
+<sub>Figura X - PCI inicial 2.0 </sub>
+
+   <img src="../assets/case_0001.jpeg" width="50%">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Dessa forma, o dispositivo desenvolvido no primeiro mês cumpriu todoso os requisitos que foram definidos como entregáveis de primeiro mês, incluindo:
+* Protótipo inicial em protoboard
+* Protótipo inicial em PCI simples
+* Código inicial que lê os valores de ângulo do MPU9250
+* Firmware que calcula o ângulo do dispositivo com Filtro de Kalman e envia dados via bluetooth low energy
+* Circuito de carregamento de bateria
+* Case inicial, ainda não resistente a poeira e vibrações
+
+&emsp;Por fim, a única coisa ainda não desenvolvida no primeiro mês foram os testes em uma máquina real, algo importante a fim de entender como as vibrações afetam a medição dos ângulos. 
 
 ## 7. Simulação do protótipo e casos de teste
 &emsp;Em um projeto que envolve hardware e software, é comum que o desenvolvimento da solução passe por 3 etapas:
