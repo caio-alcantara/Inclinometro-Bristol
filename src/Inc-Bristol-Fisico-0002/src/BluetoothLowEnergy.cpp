@@ -1,4 +1,6 @@
 #include "BluetoothLowEnergy.h"
+#include "Config.h"
+#include "Arduino.h"
 
 // Maiores definições sobre as classes e funções podem
 // ser encontradas em include/BluetoothLowEnergy.h
@@ -11,15 +13,18 @@ BLECharacteristic *pBat;
 bool deviceConnected = false;
 unsigned long lastMillis = 0;
 
+
 // Callbacks do servidor BLE
 void MyServerCallbacks::onConnect(BLEServer* pServer) {
     deviceConnected = true;
     Serial.println("Dispositivo conectado!");
+    //digitalWrite(Config::BLE_LED_PIN, HIGH);
 }
 void MyServerCallbacks::onDisconnect(BLEServer* pServer) {
     deviceConnected = false;
     Serial.println("Dispositivo desconectado!");
     pServer->startAdvertising();
+    blinkBleLed();
 }
 
 // Configuração do BLE
@@ -29,7 +34,7 @@ void setupBLE() {
     createServer(): Cria uma instância do servidor BLE
     setCallbacks(): Registra os callbacks de conexão/desconexão
     */
-    BLEDevice::init("Inclinômetro Bristol 0001");  // Nome do dispositivo BLE
+    BLEDevice::init(Config::device_name);  // Nome do dispositivo BLE
     BLEServer *pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
 
@@ -128,5 +133,17 @@ void sendBatteryPercentage(float percentage) {
         pBat->setValue(batString);
         pBat->notify();
         //Serial.printf("Enviando nível de bateria: %.1f%%\n", percentage);
+    }
+}
+
+void blinkBleLed() {
+    static unsigned long previousMillis = 0;
+    const unsigned long interval = 150;
+
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        // Pisca o LED para indicar erro
+        digitalWrite(Config::BLE_LED_PIN, !digitalRead(Config::BLE_LED_PIN));
     }
 }

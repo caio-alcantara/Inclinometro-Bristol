@@ -42,5 +42,6 @@ void setupBLE();
 void sendAngleValue(float angle);
 void sendPitchAndRoll(float pitch, float roll);
 void sendBatteryPercentage(float percentage);
+void blinkBleLed();
 
 #endif // BLUETOOTHLOWENERGY_H

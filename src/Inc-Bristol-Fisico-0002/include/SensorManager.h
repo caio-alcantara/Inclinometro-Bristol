@@ -9,7 +9,7 @@ class SensorManager {
             float yaw, pitch, roll;
         };
 
-        SensorManager(MPU9250& sensor, MPU9250Setting& settings, TwoWire& wire);
+        SensorManager(MPU9250& sensor);
         bool initialize();
         void calibrateAccelGyro();
         bool update();
@@ -17,6 +17,4 @@ class SensorManager {
 
     private:
         MPU9250& mpu;
-        MPU9250Setting& settings;
-        TwoWire& wire;
 };
