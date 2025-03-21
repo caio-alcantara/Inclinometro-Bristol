@@ -10,7 +10,7 @@ namespace Config {
     constexpr int negative_offset_angle = 8;
     constexpr int battery_check_interval = 1000;
     constexpr int sensor_update_interval = 150;
-    constexpr const char* device_name = "Inclinômetro Bristol 0002";
+    constexpr char device_name[] = "Inclinômetro Bristol 0002";
     
     namespace Kalman {
         constexpr float PITCH_Q_ANGLE = 0.001f;
