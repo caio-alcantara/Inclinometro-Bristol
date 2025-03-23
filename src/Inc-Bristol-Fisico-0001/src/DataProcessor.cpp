@@ -1,6 +1,7 @@
 #include "DataProcessor.h"
 #include <Arduino.h>
 #include <math.h>
+#include "Config.h"
 
 // *********************** DataProcessor *********************** // 
 // Responsável por processar os dados brutos do sensor e realizar cálculos úteis,
@@ -18,18 +19,27 @@ float DataProcessor::calculateAccelerometerRoll(float ay, float az) {
 
 float DataProcessor::calculateTotalInclination(float pitch, float roll) {
     float inclination = sqrt(pitch * pitch + roll * roll);
-    if ((inclination < 15 && inclination > 0) || inclination > 85) {
-        inclination -= 5; // Aqui, o -5 foi utilizado como valor descoberto empiricamente
+    /*if ((inclination < 15 && inclination > 0) || inclination > 85) {
+         // Aqui, o -5 foi utilizado como valor descoberto empiricamente
                           // Basta colocar o sensor em posição de 90 graus e ver o quão distante a medição está de 90
                           // Neste caso, a 90 graus o sensor media 95. Dessa forma, subtraímos 5
-    }
+    } */
 
-    if (inclination < 0) { // Caso a inclinação seja negativa, ajusta para 0
-        inclination = 0;   // Isso pode ocorrer devido a pequenos erros de medição
+    inclination += Config::positive_offset_angle; // Adiciona um offset positivo ao valor da inclinação
+    //inclination -= Config::negative_offset_angle; // Subtrai um offset negativo ao valor da inclinação
+    
+    /*if (inclination > 90) {
+        inclination = 180 - inclination;
+    }*/
+
+    if (inclination <= 0 || inclination < 10) {
+        inclination -= Config::negative_offset_angle;
     }
     
     inclination = truncate(inclination, 2); // Truncate arredonda para 2 casas decimais
-    return (inclination > 95.0f) ? inclination - 90.0f : inclination; 
+    //return (inclination > 95.0f) ? inclination - 90.0f : inclination;
+    return inclination;
+    
     // Se a inclinação for maior que 95°, subtrai 90° para normalizar o valor.
     // Ou seja, o valor tende sempre a ser entre 0 e 90, independentemente da direção
 }

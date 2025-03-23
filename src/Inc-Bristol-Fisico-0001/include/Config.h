@@ -5,6 +5,8 @@ namespace Config {
     constexpr uint8_t MPU_I2C_ADDRESS = 0x68;
     constexpr uint8_t LED_PIN = 2;
     constexpr unsigned long SERIAL_BAUD_RATE = 115200;
+    constexpr int positive_offset_angle = 5;
+    constexpr int negative_offset_angle = 8;
     
     namespace Kalman {
         constexpr float PITCH_Q_ANGLE = 0.001f;
