@@ -8,6 +8,8 @@
 #include "DataProcessor.h"
 #include "BluetoothLowEnergy.h"
 #include <SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library.h>
+#include <SPI.h>
+#include <SD.h>
 
 // ******************* Instanciação de objetos e Variáveis Globais  ******************* //
 MPU9250 mpu; // Instância do sensor MPU9250
@@ -32,6 +34,9 @@ KalmanFilter roll_filter(
 unsigned long last_update = 0;
 static unsigned long last_battery_check = 0;
 static unsigned long last_sensor_update = 0;
+
+// Preseça de cartão SD
+bool sd_present = false;
 
 // ******************* Funções Auxiliáres ******************* //
 
@@ -90,6 +95,77 @@ void initializeFilters() {
         data.accel.y, data.accel.z));
 }
 
+void storeBatteryData(float batteryPercentage, float batteryVoltage, unsigned long timestamp, bool sd_present) {
+    if (sd_present) {
+        File batteryFile = SD.open("/battery.csv", FILE_APPEND);
+        if (batteryFile) {
+            batteryFile.print(batteryPercentage);
+            batteryFile.print(",");
+            batteryFile.print(batteryVoltage);
+            batteryFile.print(",");
+            batteryFile.println(timestamp);
+            batteryFile.close();
+        }
+    }
+}
+
+void storeInclinationData(float total_inclination, float pitch_inclination, unsigned long timestamp, bool sd_present) {
+    if (sd_present) {
+        File pitchInclination = SD.open("/pitch_inclination.csv", FILE_APPEND);
+        if (pitchInclination) {
+            pitchInclination.print(pitch_inclination);
+            pitchInclination.print(",");
+            pitchInclination.println(timestamp);
+            pitchInclination.close();
+        }
+
+        File totalInclinationFile = SD.open("/total_inclination.csv", FILE_APPEND);
+        if (totalInclinationFile) {
+            totalInclinationFile.print(total_inclination);
+            totalInclinationFile.print(",");
+            totalInclinationFile.println(timestamp);
+            totalInclinationFile.close();
+        }
+    }
+}
+
+void setupSDCard() {
+    SPI.begin(Config::SD_CLK_PIN, Config::SD_MISO_PIN, Config::SD_MOSI_PIN, Config::SD_CS_PIN);  
+    
+    if (!SD.begin(Config::SD_CS_PIN)) {
+        Serial.println("Falha ao inicializar o cartão SD.");
+    } else {
+        Serial.println("Cartão SD inicializado com sucesso.");
+        sd_present = true;
+
+        // Configuração de arquivos de log
+
+        File totalInclinationFile = SD.open("/total_inclination.csv", FILE_APPEND);
+        if (totalInclinationFile) {
+            if (totalInclinationFile.size() == 0) {
+                totalInclinationFile.println("total_inclination,timestamp");
+            }
+            totalInclinationFile.close();
+        }
+
+        File batteryFile = SD.open("/battery.csv", FILE_APPEND);
+        if (batteryFile) {
+            if (batteryFile.size() == 0) {
+                batteryFile.println("battery,voltage,timestamp");
+            }
+            batteryFile.close();
+        }
+
+        File pitchInclination = SD.open("/pitch_inclination.csv", FILE_APPEND);
+        if (pitchInclination) {
+            if (pitchInclination.size() == 0) {
+                pitchInclination.println("pitch_inclination,timestamp");
+            }
+            pitchInclination.close();
+        }
+    }
+}
+
 
 // ******************* Setup ******************* //
 void setup() {
@@ -116,6 +192,9 @@ void setup() {
     Serial.println("MAX17043 iniciado com sucesso.");
     lipo.quickStart();
     Serial.println("Quick Start executado no MAX17043.");
+
+    // Inicializa o cartão SD
+    setupSDCard();
 }
 
 // ******************* Loop principal ******************* //
@@ -142,6 +221,8 @@ void loop() {
             Serial.println("V");
 
             sendBatteryPercentage(carga);
+
+            storeBatteryData(carga, tensao, current_time, sd_present);
         }
 
         // Atualiza os sensores a cada intervalo definido
@@ -177,9 +258,12 @@ void loop() {
 
                 sendAngleValue(total_inclination); // Envia o valor da inclinação via BLE
                 sendPitchAndRoll(filtered_pitch, filtered_roll); // Envia pitch e roll via BLE
+
+                storeInclinationData(total_inclination, filtered_pitch, now, sd_present);
             }
         }
     }
 
     
 }
+

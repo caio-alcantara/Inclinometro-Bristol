@@ -5,6 +5,10 @@ namespace Config {
     constexpr uint8_t MPU_I2C_ADDRESS = 0x68;
     constexpr uint8_t LED_PIN = 2;
     constexpr uint8_t BLE_LED_PIN = 32;
+    constexpr uint8_t SD_CS_PIN = 33;
+    constexpr uint8_t SD_MISO_PIN = 27;
+    constexpr uint8_t SD_MOSI_PIN = 25;
+    constexpr uint8_t SD_CLK_PIN = 26;
     constexpr unsigned long SERIAL_BAUD_RATE = 115200;
     constexpr int positive_offset_angle = 5;
     constexpr int negative_offset_angle = 8;
