@@ -457,6 +457,83 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;Por fim, a única coisa ainda não desenvolvida no primeiro mês foram os testes em uma máquina real, algo importante a fim de entender como as vibrações afetam a medição dos ângulos. 
 
+### 6.3. Segundo mês de execução do projeto
+&emsp;Para o segundo mês de projeto, como é de se esperar, o foco foi em desenvolver e entregar tudo aqui que foi combinado para o segundo mês na seção 2.1 deste documento. Além disso, o dispositivo desenvolvido no primeiro mês foi enviado para a Bristol a fim de que fossem realizadas testagens com uma perfuratriz de verdade, de modo a entender a precisão de medição do ângulo proveniente do dispositivo.
+
+&emsp;Após lidar com o envio, o próximo passo foi recomeçar a montagem de um novo dispositivo, que dessa vez deveria incluir:
+* Leds indicativos;
+* Leitor de cartão SD;
+* Leitor de carga da bateria
+
+&emsp;Assim, da mesma maneira como foi feito no primeiro mês, primeiro foi desenvolvido o circuito em protoboard, a fim de validar o seu funcionamento. O leitor de cartão SD utiliza a interface SPI do microcontrolador, já o leitor de carga da bateria utiliza o I2C, o mesmo utilizado pelo MPU9250. Dessa forma, as conexões foram feitas e um códio inicial para validar todo o funcionamento foi desenvolvido. Ao final desse processo, foi possível constatar que o circuito proposto funcionava.
+
+&emsp;Tendo o circuito funcionando em protoboard, a próxima etapa foi desenvolver a placa de circuito impressa. O desenvolvimento dessa placa de mostrou especialmente difícil, uma vez que, por conta das limitações das ferramentas de trabalho, só era possível projetar placas de uma cada. Assim, e por conta do aumento da quantidade de componentes e conexões, realizar o roteamente (ligação de trilhas) na placa de circuito levou um tempo considerável, e, mesmo ao final, uma trilha ficou sem rota e teve que ser feita via jumper uma vez que a placa ficou pronta. Esse tipo de problema, no entanto, dificilmente acontecerá nos próximos meses, onde haverá um foco em desenvolver uma placa de maneira industrial, utilizando de *pelo menos* 2 camadas.
+
+<div align="center">
+
+<sub>Figura X - Placa de Circuito Impresso desenvolvida no segundo mês </sub>
+
+   <img src="../assets/pcb_0003.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Com a placa pronta, foi necessário trabalhar no firmware que está presente neste repositório, ou seja, implementar as funcionalidades de leitura de carga de bateria e envio via bluetooth e também o armazenamento dos dados no cartão SD. <br>
+&emsp;Para a leitura de carga, simplesmente foi utilizada uma biblioteca própria para o dispositivo, que permite receber o chamado "State of Charge" e a tensão da bateria. Alguns podem se perguntar "Por que usar um sensor específico para a bateria e não apenas medir diretamente a tensão dela com um ESP32 e um divisor de tensão?". Bom, a resposta para essa pergunta jaz no funcionamento das baterias de íons de lítio. Tais baterias operam com uma tensão de varia de cerca de 3.2V (descarregada) a 4.2V (100% carregada). Entretanto, essas baterias não descarregam de maneira linear, o que quer dizer que, por exemplo, 3.7V não necessariamente significam 50% de carga. Por conta disso, utilizamos o CI MAX17043 para realizar a medição do State Of Charge, que utiliza um algorítmo próprio para estimar a carga, em porcentagem, da bateria. <br>
+&emsp;Em relação ao leitor de cartão SD, foi necessário incluir a biblioteca da interface SPI e do cartão SD no projeto. Após isso, foi simplesmente necessário verificar a existência dos arquivos e começar a escrever os dados neles após cada leitura. Os arquivos estão em formato CSV (valores separados por vírgula) uma vez que isso facilita a leitura. Um formato assim também facilita, por exemplo, a colocar esses dados em modelos de Machine Learning para realizar análises. É um formato que pode ser aberto como planilha facilmente também. É necessário explicar que a falta de um cartão SD não interrompe a funcionalidade do dispositivo. Caso um cartão SD não seja encontrado, os dados simplesmente não serão armazenados, mas o restante funciona normalmente. <br>
+&emsp;Finalizando este trecho, é importante comentar sobre os problemas que foram encontrados. O CI MAX17043, funcionando em conjunto com o MPU9250, apresentou alguns problemas. Até onde foi possível entender, o CI precisa de um intervalo de pelo menos 500ms entre aquisições de dados para poder funcionar corretamente. Além disso, caso o MPU9250 envie dados de maneira constante, sem nenhum atraso, a comunicação com IC falha de modo em que ele lê apenas um valor quando o microcontrolador é ligado e depois não atualiza tal valor nunca mais. Para resolver esse problema, adicionei um intervalo de 1s entre leituras do CI, algo que não deve ser um problema, até porque a carga da bateria não é algo que precisa ser atualizado a cada instante pro usuário. Além disso, foi necessário atualizar um intervalo de 150ms entre cada leitura do MPU9250, o que pareceu afetar as leituras. Será necessário trabalhar para ajustar isso. <br>
+&emsp;O último teste feito diretamente no dispositivo foi um teste de carga de bateria. Neste teste, a bateria foi carregada até a sua capacidade máxima (neste caso, o CI estava marcando cerca de 91% de carga). Após isso, o dispositivo foi ligado, com todos os seus periféricos em funcionamento (MPU9250, MPU9250, Cartão SD) e conectado via bluetooth em um celular. O dispositivo ficou, de maneira ininterrupta, por cerca de 6 horas envinando dados de maneira contínua e sem apresentar erros. Ao final deste período, apresentava uma carga de bateria de aproximadamente 30%. Foi interessante ver que o dispositivo não falhou em nenhum momento da exeucução, porém o ideal é que a bateria dure mais. Para isso, foram realizados alguns cálculos considerando o consumo de todos os componentes do circuito. Assim, chegou-se a uma conclusão que uma bateria de 3500mAh, em tese, deve ser capaz de suprir o dispositivo por pelo menos 20h, uma autonomia satisfatória. <br>
+&emsp;Um outro tópico importante que foi desenvolvido durante este segundo mês foi um aplicativo mobile, ainda em versão simples, que pode ser utilizado para conectar no dispositivo e visualizar os dados em tempo real na tela do celular de maneira graficamente mais amigável. Tal aplicativo foi feito utilizando a liguagem Dart e o framework Flutter, famoso por permitir desenvolver aplicativos que funcionam tanto para IOS como Android. Detalhes técnicos acerca da implementação do aplicativo não serão discutidos nessa documentação, mas ele conta com a capacidade de:
+* Procurar dispositivos Bluetooth próximos, porém só mostra na tela os dispositivos que comecem com o nome "Inclinômetro Bristol";
+* Se conectar a um dispositivo do tipo Inclinômetro Bristol;
+* Mostrar os dados de inclinação em X e Y provenientes do dispositivo;
+* No momento, o aplicativo NÃO mostra dados reais de nível de bateria, mas sim um valor falso fixo em 50%.
+
+&emsp;Abaixo, é possível ver fotos das telas dessa primeira versão do aplicativo. 
+
+<div align="center">
+
+<sub>Figura X - Tela 1 da versão inicial do app do Inclinômetro Bristol </sub>
+
+   <img width=50% src="../assets/app_tela_1.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+
+<sub>Figura X - Tela 2 da versão inicial do app do Inclinômetro Bristol </sub>
+
+   <img width=50% src="../assets/app_tela_2.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+
+<sub>Figura X - Tela 3 da versão inicial do app do Inclinômetro Bristol </sub>
+
+   <img width=50% src="../assets/app_tela_3.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+
+<sub>Figura X - Tela 4 da versão inicial do app do Inclinômetro Bristol </sub>
+
+   <img width=50% src="../assets/app_tela_4.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Por fim, os próximos passos para o próximo (terceiro) mês de desenvolvimento do projeto estará focado em implementar atualizações de firmware de maneira remota.
+
 ## 7. Simulação do protótipo e casos de teste
 &emsp;Em um projeto que envolve hardware e software, é comum que o desenvolvimento da solução passe por 3 etapas:
 * Simulação, a fim de entender se a ideia é viável, se os componentes eletrônicos interagem bem entre si, validar ideias de código sem se preocupar com componentes físicos;
