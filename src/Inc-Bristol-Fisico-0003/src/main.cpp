@@ -185,16 +185,16 @@ void setup() {
     last_update = millis();
 
     // Inicializa o sensor MAX17043
-    if (!lipo.begin()) {
-        handleBatteryError();
-    }
+    //if (!lipo.begin()) {
+    //    handleBatteryError();
+    //}
 
     Serial.println("MAX17043 iniciado com sucesso.");
-    lipo.quickStart();
+    //lipo.quickStart();
     Serial.println("Quick Start executado no MAX17043.");
 
     // Inicializa o cartão SD
-    setupSDCard();
+    //setupSDCard();
 }
 
 // ******************* Loop principal ******************* //
@@ -209,20 +209,20 @@ void loop() {
         if (current_time - last_battery_check >= Config::battery_check_interval) {
             last_battery_check = current_time;
 
-            float carga = lipo.getSOC();
-            float tensao = lipo.getVoltage();
+            //float carga = lipo.getSOC();
+            //float tensao = lipo.getVoltage();
 
             Serial.print("Carga da bateria: ");
-            Serial.print(carga, 2);
+            //Serial.print(carga, 2);
             Serial.println("%");
             
             Serial.print("Tensão da bateria: ");
-            Serial.print(tensao, 2);
+            //Serial.print(tensao, 2);
             Serial.println("V");
 
-            sendBatteryPercentage(carga);
+            //sendBatteryPercentage(carga);
 
-            storeBatteryData(carga, tensao, current_time, sd_present);
+            //storeBatteryData(carga, tensao, current_time, sd_present);
         }
 
         // Atualiza os sensores a cada intervalo definido

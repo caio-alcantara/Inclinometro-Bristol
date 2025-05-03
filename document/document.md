@@ -534,6 +534,77 @@ Em geral, a criação de um storyboard inclui três elementos principais: o cen�
 
 &emsp;Por fim, os próximos passos para o próximo (terceiro) mês de desenvolvimento do projeto estará focado em implementar atualizações de firmware de maneira remota.
 
+### 6.4. Terceiro mês de execução do projeto
+&emsp;Antes de iniciar o terceiro mês do projeto, foi feita uma reunião com os principais stakeholders e foi definido que a prioridade de desenvolvimento deveria estar na placa de circuito e não nas atualizações de firmware remotas. Essa decisão foi tomada porque o processo de desenvolver placas de circuito, principalmente as mais complexas, é um processo iterativo no qual é comum cometer erros e só perceber uma vez que a placa está pronta. Assim, caso fosse desenvolvida uma placa que precisasse de ajustes, ainda haveria tempo para corrigir isso dentro do escopo de 5 meses de projeto. Dessa forma, esta seção irá tratar exclusivamente do desenvolvimento de uma placa de circuito industrial para acomodar o Inclinômetro Bristol.
+
+#### 6.4.1. Escolha de componentes
+&emsp;Para uma placa de circuito industrial e comercializável, entende-se que não é viável utilizar os componentes como eles estavam nas placas anteriores porque eles vinham em versões de módulos prontos, tornando-os mais caros e não viáveis em produtos de mercado. Dessa forma, foi feito um estudo afim de utilizar os CIs (circuitos-integrados) e chips ao invés de utilizar os módulos. Um exemplo disso é o microcontrolador. Nas primeiras versões, utilizou-se um módulo ESP32-Wroom (figura X abaixo), que é um módulo embarcado com um ESP32. O valor desse módulo chegava a custar entre 50 e 70 reais. Na versão industrial da placa de circuito, foi utilizado apenas o chip do ESP32-S3-MINI-N8 (figura X abaixo), que é muito similar ao utilizado anteriormente porém, somando todo o circuito extra para seu funcionamento, não ultrapassa os 30 reais. Seu datasheet pode ser encontrado em: https://br.mouser.com/datasheet/2/891/esp32_s3_mini_1_mini_1u_datasheet_en-2997643.pdf
+
+<div align="center">
+<sub>Figura X - Módulo ESP32-Wroom </sub>
+
+   <img width=50% src="../assets/esp32_wroom.png">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+<div align="center">
+<sub>Figura X - Chip ESP32-S3-MINI-N8 </sub>
+
+   <img width=50% src="../assets/ESP32-S3-MINI-1-N8.jpg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Além do microcontrolador, foram escolhidos os seguintes CIs/chips:
+* CI do MPU9250: Ao invés de utilizar um módulo pronto, o projeto seguiu utilizando apenas o CI, que é extremamente menor do que o módulo. Seu datasheet pode ser encontrado em: https://invensense.tdk.com/download-pdf/mpu-9250-datasheet/. Neste datasheet, é possível ver o circuito mínimo para que o sensor funcione. Tal circuito, considerando a comunicação I2C com o ESP32, pode ser feito com apenas 3 capacitores. Ou seja, é um sensor muito simples de ser utilizado.
+* CI do MAX1704X: Ao invés de utilizar um módulo com o MAX17043, que é o responsável por medir a carga da bateria, seguimos também com o seu CI. Seu funcionamento básico está descrito no seguinte datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/max17043-max17044.pdf. Assim como o MPU, este CI não possui um funcionamento muito complexo. Entretanto, adianto aqui que na versão final da placa, foi utilizado o módulo, uma vez que o CI não estava disponível para compra.
+* TP4056: Ao invés de utilizar um módulo baseado no CI, foi decidido criar o próprio circuito de carregamento de baterias utilizando o TP4056, com datasheet em: https://dlnmh9ip6v2uc.cloudfront.net/datasheets/Prototyping/TP4056.pdf. Seu circuito de funcionamente é ligeiramente maior, porém não é complexo. Junto a ele, utilizou-se um CI DW01A e um FS8205 para adicionar proteção à bateria. 
+* Demais componentes envolvem conectores micro-usb, um circuito de diodos D3V3XA4B10LP para proteger a porta micro-usb de programação do ESP32, um regulador baixa-queda TLV75801PDRV (regula 5V do usb para 3V3 de funcionamento do ESP32). Além disso, o circuito conta com alguns componentes como leds, botões e resistores gerais para funcionamentos e indicações e também um conjunto de 6 pinos para conectar o módulo do cartão SD. Mais detalhes podem ser visualizados no esquemático da placa, que pode ser acessado no software Kicad. O esquemático se encontra na pasta src/PCI_COMPLETA_1.0/PCI_COMPLETA_1.0.kicad_sch. 
+
+<div align="center">
+<sub>Figura X - Esquemático PCI industrial </sub>
+
+   <img  src="../assets/esquematico_industrial.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+#### 6.4.2. Desenvolvimento do layout da placa de circuito
+&emsp;Não é viável discorrer muito sobre como os componentes da placa de circuito foram arranjados. Entretanto, alguns apontamentos aqui ficam:
+* Foram utilizadas 4 camadas, sendo duas para trilhas de sinal e alimentação, uma para 3V3 e outra para GND. Além disso, o plano de GND foi adicionado em todas as camadas a fim de melhorar a dissipação de calor.
+* O roteamento das trilhas foi feito de modo a tentar minimizar o tamanho da placa porém sem dificultar o processo com um espaço muito pequeno.
+* A antena do chip do ESP32 deve estar para fora da placa para evitar interferências
+* As trilhas D+ e D-, para programar o ESP32, foram roteadas como para diferencial a fim de minimizar problemas causados por impedância nas trilhas.
+* Várias vias do plano GND foram adicionadas à placa para ajudar a conectar todos os GND e ajudar a dissipar calor. 
+* O MPU9250 foi posicionado próximo ao centro da placa para ajudar nas medições de ângulo. 
+
+<div align="center">
+<sub>Figura X - Layout PCI industrial </sub>
+
+   <img  src="../assets/layout_pci_industrial.jpeg">
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+
+</div>
+
+&emsp;Com a placa pronta, foram gerados os arquivos de fabricação. Aqui, foram utilizados os serviços da [JLC PCB](https://jlcpcb.com/), que possui um serviço tanto para fazer as placas como para soldar e montar os componentes. Assim, foi gasto um valor total de aproximadamente R$2000 para receber 5 placas, sendo que 2 delas estavam com componentes soldados e realmente utilizáveis. Ou seja, tivemos uma média de 1000 reais por placa desenvolvida após pagar taxas de importação, frete, compra de componentes, etc. 
+
+#### 6.4.3. Testes da placa de circuito
+&emsp;Com as placas em mãos, chegou o momento de as testar. Os testes envolvem alimentação da placa, verificar se todos os periféricos funcionam e se o bluetooth também funciona corretamente. Após realizar os testes os resultados foram os seguintes:
+* A placa 1 possuía tudo funcionando corretamente, exceto pelo cartão SD, que não era reconhecido.
+* A placa 2 possuía tudo funcionando corretamente, incluindo o cartão SD. Algo que indica que o problema na placa 1 não foi de design da placa, mas sim provavelmente alguma solda ruim feita na fábrica. 
+
+&emsp;Após alguns testes, alguns ocorreram algumas infelicidades:
+* A placa 2, que possuía tudo funcionando, não estava mais sendo reconhecida pelo computador para ser programada.
+* Tivemos que utilizar, então, a placa 1, que não possui cartão SD funcionando.
+* Além disso, o módulo de sensor de carga de bateria que possuía ficou danificado após tanto soldá-lo e dessoldar. Dessa forma, a placa ficou, basicamente, com o ESP32 e o MPU9250 funcionando. Está longe de ser um produto final ideal, mas será mais do que suficiente para prosseguir com o projeto.
+
+&emsp;Assim foi finalizado o terceiro mês de projeto. Agora, possuindo uma placa de circuito de nível industrial e que pode ser comercializada como um produto para o mercado, o foco está em realizar polimentos no firmware, adicionar atualizações remotas e melhorar o aplicativo mobile. Tudo isso será feito no quarto e quinto mês de projeto. 
+
 ## 7. Simulação do protótipo e casos de teste
 &emsp;Em um projeto que envolve hardware e software, é comum que o desenvolvimento da solução passe por 3 etapas:
 * Simulação, a fim de entender se a ideia é viável, se os componentes eletrônicos interagem bem entre si, validar ideias de código sem se preocupar com componentes físicos;
