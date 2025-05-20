@@ -10,6 +10,7 @@
 #include <SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library.h>
 #include <SPI.h>
 #include <SD.h>
+#include "FFat.h"
 
 // ******************* Instanciação de objetos e Variáveis Globais  ******************* //
 MPU9250 mpu; // Instância do sensor MPU9250
@@ -169,6 +170,7 @@ void setupSDCard() {
 
 // ******************* Setup ******************* //
 void setup() {
+    pauseNotifications = false; // Permite notificações BLE
     Serial.begin(Config::SERIAL_BAUD_RATE); // Valores definidos no namespace Config
     Wire.begin(Config::SDA_PIN, Config::SCL_PIN); // Inicializa a comunicação I2C
     Wire.setClock(400000); // Define a velocidade do I2C para 100 kHz
@@ -176,6 +178,12 @@ void setup() {
     pinMode(Config::BLE_LED_PIN, OUTPUT);
     if(!sensor.initialize()) {
         handleSensorError();
+    }
+
+
+    if (!FFat.begin(FORMAT_FFAT_IF_FAILED)) {
+        Serial.println("FFat Mount Failed even after formatting!");
+        return;
     }
 
     setupBLE(); // Inicializa o serviço BLE
@@ -193,77 +201,162 @@ void setup() {
     //lipo.quickStart();
     Serial.println("Quick Start executado no MAX17043.");
 
+    lastOtaNotification = 0;
+    lastSensorNotification = 0;
+
     // Inicializa o cartão SD
     //setupSDCard();
 }
 
 // ******************* Loop principal ******************* //
 void loop() {
-    if (!deviceConnected) {
-        blinkBleLed();
-    } else {
-        digitalWrite(Config::BLE_LED_PIN, HIGH);
-        unsigned long current_time = millis();
-
-        // Verifica a bateria a cada intervalo definido
-        if (current_time - last_battery_check >= Config::battery_check_interval) {
-            last_battery_check = current_time;
-
-            //float carga = lipo.getSOC();
-            //float tensao = lipo.getVoltage();
-
-            Serial.print("Carga da bateria: ");
-            //Serial.print(carga, 2);
-            Serial.println("%");
-            
-            Serial.print("Tensão da bateria: ");
-            //Serial.print(tensao, 2);
-            Serial.println("V");
-
-            //sendBatteryPercentage(carga);
-
-            //storeBatteryData(carga, tensao, current_time, sd_present);
-        }
-
-        // Atualiza os sensores a cada intervalo definido
-        if (current_time - last_sensor_update >= Config::sensor_update_interval) {
-            last_sensor_update = current_time;
-
-            if (sensor.update()) {
-                const unsigned long now = millis();
-                const float delta_time = (now - last_update) / 1000.0f; // Tempo, em segundos, decorrido desde última medição
-                last_update = now;
-
-                const auto data = sensor.getData();
-
-                const float pitch_acc = DataProcessor::calculateAccelerometerPitch( 
-                    data.accel.x, data.accel.y, data.accel.z);
-
-                const float roll_acc = DataProcessor::calculateAccelerometerRoll(
-                    data.accel.y, data.accel.z);
-
-                // Filtra valores de pitch e roll com o Filtro de Kalman
-                const float filtered_pitch = pitch_filter.update(
-                    pitch_acc, data.gyro.y, delta_time);
-
-                const float filtered_roll = roll_filter.update(
-                    roll_acc, data.gyro.x, delta_time);
-
-                // Calcula a inclinação total do sensor
-                const float total_inclination = DataProcessor::calculateTotalInclination(
-                    filtered_pitch, filtered_roll);
+    // Verifica o modo de operação atual
+    switch (MODE) {
+        case NORMAL_MODE:
+            // Modo normal de operação - processamento de sensores e notificações BLE
+            if (deviceConnected) {
+                digitalWrite(Config::BLE_LED_PIN, HIGH);
                 
-                Serial.println("Dados do sensor:");
-                Serial.printf("Inclinação total: %.2f\n", total_inclination);
-
-                sendAngleValue(total_inclination); // Envia o valor da inclinação via BLE
-                sendPitchAndRoll(filtered_pitch, filtered_roll); // Envia pitch e roll via BLE
-
-                storeInclinationData(total_inclination, filtered_pitch, now, sd_present);
-            }
-        }
-    }
-
+                // Comandos do protocolo OTA 
+                if (sendMode) {
+                    uint8_t fMode[] = {0xAA, FASTMODE};
+                    registerOtaNotification();
+                    pCharacteristicTX->setValue(fMode, 2);
+                    pCharacteristicTX->notify();
+                    delay(50); // Delay importante para estabilidade do BLE
+                    sendMode = false;
+                }
+        
+                if (sendSize) {
+                    unsigned long x = FLASH.totalBytes();
+                    unsigned long y = FLASH.usedBytes();
+                    uint8_t fSize[] = {0xEF, (uint8_t) (x >> 16), (uint8_t) (x >> 8), (uint8_t) x, 
+                                      (uint8_t) (y >> 16), (uint8_t) (y >> 8), (uint8_t) y};
+                    pCharacteristicTX->setValue(fSize, 7);
+                    pCharacteristicTX->notify();
+                    delay(50); // Delay importante para estabilidade do BLE
+                    sendSize = false;
+                }
+                
+                // Processamento dos sensores apenas se não estiver pausado para OTA
+                if (!pauseNotifications) {
+                    unsigned long current_time = millis();
     
+                    // Verifica a bateria a cada intervalo definido
+                    if (current_time - last_battery_check >= Config::battery_check_interval) {
+                        last_battery_check = current_time;
+    
+                        // Código de leitura da bateria aqui...
+                        // float carga = lipo.getSOC();
+                        // float tensao = lipo.getVoltage();
+                        
+                        // Envio dos dados da bateria
+                        // sendBatteryPercentage(carga);
+                    }
+    
+                    // Atualiza os sensores a cada intervalo definido
+                    if (current_time - last_sensor_update >= Config::sensor_update_interval) {
+                        last_sensor_update = current_time;
+    
+                        if (sensor.update()) {
+                            const unsigned long now = millis();
+                            const float delta_time = (now - last_update) / 1000.0f;
+                            last_update = now;
+    
+                            const auto data = sensor.getData();
+    
+                            const float pitch_acc = DataProcessor::calculateAccelerometerPitch(
+                                data.accel.x, data.accel.y, data.accel.z);
+    
+                            const float roll_acc = DataProcessor::calculateAccelerometerRoll(
+                                data.accel.y, data.accel.z);
+    
+                            // Filtra valores de pitch e roll com o Filtro de Kalman
+                            const float filtered_pitch = pitch_filter.update(
+                                pitch_acc, data.gyro.y, delta_time);
+    
+                            const float filtered_roll = roll_filter.update(
+                                roll_acc, data.gyro.x, delta_time);
+    
+                            // Calcula a inclinação total do sensor
+                            const float total_inclination = DataProcessor::calculateTotalInclination(
+                                filtered_pitch, filtered_roll);
+                            
+                            // Envia dados via BLE com delays adequados entre notificações
+                            Serial.print("Pitch: ");
+                            Serial.println(filtered_pitch);
+                            Serial.print(" Roll: ");
+                            Serial.println(filtered_roll);
+                            Serial.print(" Inclinação Total: ");
+                            Serial.println(total_inclination);
+                            sendAngleValue(total_inclination);
+                            delay(10);
+                            //sendPitchAndRoll(filtered_pitch, filtered_roll);
+                        }
+                    }
+                }
+            } else {
+                digitalWrite(Config::BLE_LED_PIN, LOW);
+                blinkBleLed();
+            }
+            break;
+        
+        case UPDATE_MODE:
+            // Modo de recebimento do firmware - nesse modo não processa sensores
+            if (request) {
+                uint8_t rq[] = {0xF1, (uint8_t)((cur + 1) >> 8), (uint8_t)((cur + 1) & 0xFF)};
+                pCharacteristicTX->setValue(rq, 3);
+                pCharacteristicTX->notify();
+                delay(50);  // Delay importante para estabilidade do BLE
+                request = false;
+            }
+        
+            if (cur + 1 == parts) { // received complete file
+                uint8_t com[] = {0xF2, (uint8_t)((cur + 1) >> 8), (uint8_t)((cur + 1) & 0xFF)};
+                pCharacteristicTX->setValue(com, 3);
+                pCharacteristicTX->notify();
+                delay(50);  // Delay importante para estabilidade do BLE
+                MODE = OTA_MODE;
+            }
+        
+            if (writeFile) {
+                // Escreve os dados do firmware no arquivo
+                if (!current) {
+                    writeBinary(FLASH, "/update.bin", updater, writeLen);
+                } else {
+                    writeBinary(FLASH, "/update.bin", updater2, writeLen2);
+                }
+            }
+            break;
+        
+        case OTA_MODE:
+            // Modo de instalação do firmware
+            if (writeFile) {
+                // Finaliza a escrita do arquivo
+                if (!current) {
+                    writeBinary(FLASH, "/update.bin", updater, writeLen);
+                } else {
+                    writeBinary(FLASH, "/update.bin", updater2, writeLen2);
+                }
+            }
+        
+            // Verifica se o arquivo foi recebido completo
+            if (rParts == tParts) {
+                Serial.println("Firmware recebido completamente");
+                delay(1000);
+                updateFromFS(FLASH);  // Inicia a atualização
+            } else {
+                writeFile = true;
+                Serial.println("Recebimento do firmware incompleto");
+                Serial.print("Esperado: ");
+                Serial.print(tParts);
+                Serial.print(" Recebido: ");
+                Serial.println(rParts);
+                delay(2000);
+                // Se o firmware estiver incompleto, volta ao modo normal
+                MODE = NORMAL_MODE;
+                pauseNotifications = false;
+            }
+            break;
+    }
 }
-
