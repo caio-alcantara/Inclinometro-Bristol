@@ -225,6 +225,19 @@ void sendAngleValue(float angle) {
 
     unsigned long currentTime = millis();
     
+    // Aplicar ajuste gradual para ângulos acima de 75
+    if (angle > 75.0f) {
+        float adjustment = 0.0f;
+        if (angle <= 84.0f) {
+            // Interpolação linear: de 0 a +6 entre 75 e 84 graus
+            adjustment = ((angle - 75.0f) / (84.0f - 75.0f)) * 6.0f;
+        } else {
+            // Limita o ajuste máximo a +6
+            adjustment = 6.0f;
+        }
+        angle += adjustment;
+    }
+    
     Serial.println("Sending angle value: " + String(angle));
 
     // Se estamos em modo OTA ou se uma notificação OTA foi enviada recentemente, reduz a frequência
@@ -257,7 +270,7 @@ void sendAngleValue(float angle) {
     pAngulo->notify();
     
     // Delay reduzido para minimizar bloqueio
-    delay(5);
+    //delay(5);
 }
 
 
@@ -297,7 +310,7 @@ void sendBatteryPercentage(float percentage) {
         dtostrf(percentage, 1, 1, batString); 
         pBat->setValue(batString);
         pBat->notify();
-        delay(10); // Small delay after notification
+        //delay(10); // Small delay after notification
     }
 }
 

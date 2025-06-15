@@ -19,29 +19,34 @@ float DataProcessor::calculateAccelerometerRoll(float ay, float az) {
 
 float DataProcessor::calculateTotalInclination(float pitch, float roll) {
     float inclination = sqrt(pitch * pitch + roll * roll);
-    /*if ((inclination < 15 && inclination > 0) || inclination > 85) {
-         // Aqui, o -5 foi utilizado como valor descoberto empiricamente
-                          // Basta colocar o sensor em posição de 90 graus e ver o quão distante a medição está de 90
-                          // Neste caso, a 90 graus o sensor media 95. Dessa forma, subtraímos 5
-    } */
-
-    inclination += Config::positive_offset_angle; // Adiciona um offset positivo ao valor da inclinação
-    //inclination -= Config::negative_offset_angle; // Subtrai um offset negativo ao valor da inclinação
     
-    /*if (inclination > 90) {
-        inclination = 180 - inclination;
-    }*/
-
-    if (inclination <= 0 || inclination < 10) {
+    // Determinar o sinal baseado no maior componente absoluto
+    float sign = 1.0f;
+    if (abs(pitch) > abs(roll)) {
+        sign = (pitch < 0) ? -1.0f : 1.0f;
+    } else {
+        sign = (roll < 0) ? -1.0f : 1.0f;
+    }
+    
+    // Aplicar o sinal à inclinação
+    inclination *= sign;
+    
+    // Aplicar offsets
+    inclination += Config::positive_offset_angle;
+    
+    if (inclination <= 0 || abs(inclination) < 10) {
         inclination -= Config::negative_offset_angle;
     }
     
-    inclination = truncate(inclination, 2); // Truncate arredonda para 2 casas decimais
-    //return (inclination > 95.0f) ? inclination - 90.0f : inclination;
-    return inclination;
+    // Limitar o valor entre -90 e +90
+    if (inclination > 90) {
+        inclination = 90;
+    } else if (inclination < -90) {
+        inclination = -90;
+    }
     
-    // Se a inclinação for maior que 95°, subtrai 90° para normalizar o valor.
-    // Ou seja, o valor tende sempre a ser entre 0 e 90, independentemente da direção
+    inclination = truncate(inclination, 2);
+    return inclination;
 }
 
 // Arredondar valores a n casas decimais (número de casas decimais)

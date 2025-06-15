@@ -289,8 +289,9 @@ void loop() {
                             Serial.println(filtered_roll);
                             Serial.print(" Inclinação Total: ");
                             Serial.println(total_inclination);
-                            sendAngleValue(total_inclination);
-                            delay(10);
+                            sendAngleValue(filtered_roll);
+                            sendPitchAndRoll(filtered_pitch - 6, filtered_roll);
+                            //delay(10);
                             //sendPitchAndRoll(filtered_pitch, filtered_roll);
                         }
                     }
